@@ -2,6 +2,9 @@ import json
 from flask import request
 from core.libs import assertions
 from functools import wraps
+from core.models.students import Student
+from core.models.teachers import Teacher
+from core.models.principals import Principal
 
 
 class AuthPrincipal:
@@ -35,10 +38,13 @@ def authenticate_principal(func):
 
         if request.path.startswith('/student'):
             assertions.assert_true(p.student_id is not None, 'requester should be a student')
+            assertions.assert_found(Student.query.get(p.student_id), 'Student not found.')
         elif request.path.startswith('/teacher'):
             assertions.assert_true(p.teacher_id is not None, 'requester should be a teacher')
+            assertions.assert_found(Teacher.query.get(p.teacher_id), 'Teacher not found.')
         elif request.path.startswith('/principal'):
             assertions.assert_true(p.principal_id is not None, 'requester should be a principal')
+            assertions.assert_found(Principal.query.get(p.principal_id), 'Principal not found.')
         else:
             assertions.assert_found(None, 'No such api')
 
