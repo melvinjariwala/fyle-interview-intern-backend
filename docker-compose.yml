@@ -1,0 +1,10 @@
+version: "3.10"
+
+services:
+  web:
+    build: .
+    command: bash run.sh
+    volumes:
+      - ./core/store.sqlite3:/app/core/store.sqlite3:rw
+    ports:
+      - "7755:7755"
