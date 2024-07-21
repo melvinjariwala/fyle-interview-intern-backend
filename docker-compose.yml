@@ -4,7 +4,21 @@ services:
   web:
     build: .
     command: bash run.sh
-    volumes:
-      - ./core/store.sqlite3:/app/core/store.sqlite3:rw
     ports:
       - "7755:7755"
+
+  test:
+    build: .
+    command: sh -c "rm -rf core/store.sqlite3 && flask db upgrade -d core/migrations/ && pytest -vvv -s tests/"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_APP: core/server.py
+
+  test-coverage:
+    build: .
+    command: sh -c "rm -rf core/store.sqlite3 && flask db upgrade -d core/migrations/ && pytest --cov"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_APP: core/server.py
